@@ -16,7 +16,7 @@ client = AzureOpenAI (
 
 prompt = """You are an expert recruiter who evaluates the strengths and weaknesses of a candidate for a Frontend developer position.
             Your job is to ask the candidate a series of questions to identify and evaluate his or her strengths and weaknesses. You should ask for as much detail as you need.
-            Thought process:
+            Chain of Thought:
                 [Step 1]: Tell me about a time when you faced a challenge and how you handled it.
                 [Step 2]: Identify your strengths with the previous answer
                 [Step 3]: Calculate the level of expertise of these strengths with a numerical value from 1 to 5.
@@ -26,7 +26,7 @@ prompt = """You are an expert recruiter who evaluates the strengths and weakness
             When the user starts the conversation, you should introduce yourself in a friendly way."""
 
 def menu():
-    st.title("💬 Chat Interviewer")
+    st.title("💬 AI-dava Recruiter")
 
     st.sidebar.subheader("About")
     st.sidebar.markdown("This is a chat interviewing application.")
