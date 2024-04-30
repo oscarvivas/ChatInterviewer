@@ -7,16 +7,27 @@ import os
 import streamlit as st
 from pathlib import Path
 
+#Config Page
+st.set_page_config(
+    page_title="Load Profiles",
+    page_icon="💬",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
 # load environment vars
 load_dotenv()
 
 # create a openai client
 client = AzureOpenAI (
-    api_key=os.getenv("OPENAI_API_KEY"),
+    api_key=os.getenv("OPENAI_API_KEYY"),
     azure_endpoint=os.getenv("AZURE_ENDPOINT"),
     api_version=os.getenv("API_VERSION") # Ensure you use the correct API version
 )
 
+print(os.getenv("OPENAI_API_KEY"))
+print(os.getenv("AZURE_ENDPOINT"))
+print(os.getenv("API_VERSION"))
 
 def analyze_cv (cv_text):
     try:

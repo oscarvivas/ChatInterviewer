@@ -4,12 +4,21 @@ from dotenv import load_dotenv
 import os
 import streamlit as st
 
+#Config Page
+st.set_page_config(
+    page_title="Recuitment App",
+    page_icon="💬",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+
 # load environment vars
 load_dotenv()
 
 # create a openai client
 client = AzureOpenAI (
-    api_key=os.getenv("OPENAI_API_KEY"),
+    api_key=os.getenv("OPENAI_API_KEYY"),
     azure_endpoint=os.getenv("AZURE_ENDPOINT"),
     api_version=os.getenv("API_VERSION") # Ensure you use the correct API version
 )
@@ -25,17 +34,7 @@ prompt = """You are an expert recruiter who evaluates the strengths and weakness
                 [Step 7]: Generate a table with the following structure [weakness]
             When the user starts the conversation, you should introduce yourself in a friendly way."""
 
-def menu():
-    st.title("💬 Chat Interviewer")
 
-    st.sidebar.subheader("About")
-    st.sidebar.markdown("This is a chat interviewing application.")
-
-    st.sidebar.subheader("Instructions")
-    st.sidebar.markdown("Answer the questions asked by the interviewer using the chat interface.")
-
-    st.sidebar.subheader("About Me")
-    st.sidebar.markdown("I am an AI-powered interviewer, ready to ask you questions!")
 
 
 def interview():
@@ -67,7 +66,18 @@ def ask_openai (chatMessages):
         return answer
     except Exception as e:
         return str(e) # Return the exception as a string for debugging 
+    
+def menu():
+    st.title("💬 Chat Interviewer")
 
+    st.sidebar.subheader("About")
+    st.sidebar.markdown("This is a chat interviewing application.")
+
+    st.sidebar.subheader("Instructions")
+    st.sidebar.markdown("Answer the questions asked by the interviewer using the chat interface.")
+
+    st.sidebar.subheader("About Me")
+    st.sidebar.markdown("I am an AI-powered interviewer, ready to ask you questions!")
 
 if __name__ == "__main__":
 
