@@ -8,17 +8,24 @@ import streamlit as st
 from pathlib import Path
 
 st.set_page_config(
-    page_title="IA Recruitment Home",
-    page_icon="💬",
-    layout="wide",
-    initial_sidebar_state="expanded"
+page_title= "AI-Dava Recruiter", 
+page_icon="C:\Projects\Endav-AI Recruiter\ChatInterviewer\Icon Endava Message.ico", 
+layout = "wide",
+initial_sidebar_state="expanded",
 )
+
+# st.set_page_config(
+# page_title="IA Recruitment Home",
+# page_icon="💬",
+# layout="wide",
+#initial_sidebar_state="expanded"
+
 
 # load environment vars
 load_dotenv()
 
 def body():
-    st.title("💬 Chat Assistant")
+    st.title("🧚‍♀️Chat with HADA")
     st.text("some text")
     st.code("no te olvides de poner el where en el delete from")
 

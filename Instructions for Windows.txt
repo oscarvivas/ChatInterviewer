@@ -1,0 +1,13 @@
+# 1- create environment
+python -m venv venv
+
+# 2- load the environment
+.\venv\Scripts\activate 
+
+# 3- install packages
+pip install openai streamlit python-dotenv
+pip install PyPDF2
+
+# 4- run app
+.\venv\Scripts\activate
+streamlit run src/main.py
