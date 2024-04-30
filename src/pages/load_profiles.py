@@ -20,14 +20,11 @@ load_dotenv()
 
 # create a openai client
 client = AzureOpenAI (
-    api_key=os.getenv("OPENAI_API_KEYY"),
+    api_key=os.getenv("OPENAI_API_KEY"),
     azure_endpoint=os.getenv("AZURE_ENDPOINT"),
     api_version=os.getenv("API_VERSION") # Ensure you use the correct API version
 )
 
-print(os.getenv("OPENAI_API_KEY"))
-print(os.getenv("AZURE_ENDPOINT"))
-print(os.getenv("API_VERSION"))
 
 def analyze_cv (cv_text):
     try:
