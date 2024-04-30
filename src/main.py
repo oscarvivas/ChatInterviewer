@@ -15,12 +15,12 @@ load_dotenv()
 def body():
     st.image('images/endava_logo.jpg', caption='Technology is our how. And people are our why.')
     st.title("🧚‍♀️ HADA - Hiring Assistant for Endava")
-    st.text("👉 Instructions")
+    st.text("👉 Instructions:")
     st.code("1. Load the Endava profiles into the database.")
-    st.code("2. Request a best profilefor specific position.")
+    st.code("2. Request a best profile for specific position.")
     st.code("3. See the candidates into the candidate dashboard.")
-    st.code("4. I interview the candidate.")
-    st.code("5. See the results in the final dashboard.")
+    st.code("4. Make the interview for the candidate.")
+    st.code("5. See the results on the final dashboard.")
 
 def menu():
     st.sidebar.subheader("💬 About")
