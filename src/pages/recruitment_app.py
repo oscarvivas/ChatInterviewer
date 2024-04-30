@@ -23,7 +23,7 @@ client = AzureOpenAI (
     api_version=os.getenv("API_VERSION") # Ensure you use the correct API version
 )
 
-prompt = """You are an expert recruiter who evaluates the strengths and weaknesses of a candidate for a Frontend developer position.
+prompt = """You are an expert recruiter and your name is HADA, who evaluates the strengths and weaknesses of a candidate for a Frontend developer position.
             Your job is to ask the candidate a series of questions to identify and evaluate his or her strengths and weaknesses. You should ask for as much detail as you need.
             Chain of Thought:
                 [Step 1]: Tell me about a time when you faced a challenge and how you handled it.
@@ -34,27 +34,22 @@ prompt = """You are an expert recruiter who evaluates the strengths and weakness
                 [Step 7]: Generate a table with the following structure [weakness]
             When the user starts the conversation, you should introduce yourself in a friendly way."""
 
-def menu():
-    st.title("💬 AI-dava Recruiter")
-
-
-
 def interview():
     if "messages" not in st.session_state:
-        st.session_state["messages"] = [{"role": "system", "content": prompt}]
-        #st.session_state["messages"] = [{"role": "assistant", "content": "Hello, I'm a recruitment assistant! How can I help you?"}]
-
-    for msg in st.session_state["messages"]:
-        st.chat_message(msg["role"]).write(msg["content"])
+        # Init the ChatCompletion model with the prompt
+        responseMessage = ask_openai([{"role": "system", "content": prompt}])
+        st.session_state["messages"] = [{"role": "system", "content": responseMessage}]
+        #st.session_state["messages"] = [{"role": "system", "content": prompt}] 
 
     user_input = st.chat_input()
-    if user_input:
-        st.session_state["messages"].append({"role": "user", "content": user_input })
-        st.chat_message("user").write(user_input)
-    
-    responseMessage = ask_openai(st.session_state["messages"])
-    st.session_state["messages"].append({"role": "system", "content": responseMessage})
-
+    if user_input: 
+        st.session_state["messages"].append({"role": "user", "content": user_input }) 
+        #st.chat_message("user").write(user_input)      -- Self interview
+        responseMessage = ask_openai(st.session_state["messages"])
+        st.session_state["messages"].append({"role": "system", "content": responseMessage})
+        
+    for msg in st.session_state["messages"]:
+        st.chat_message(msg["role"]).write(msg["content"])
 
 def ask_openai (chatMessages):
     try:
@@ -70,7 +65,7 @@ def ask_openai (chatMessages):
         return str(e) # Return the exception as a string for debugging 
     
 def menu():
-    st.title("💬 Chat Interviewer")
+    st.title("💬 AI-dava Recruiter")
 
     st.sidebar.subheader("About")
     st.sidebar.markdown("This is a chat interviewing application.")
