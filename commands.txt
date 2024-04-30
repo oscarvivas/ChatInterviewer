@@ -8,6 +8,10 @@ python -m venv venv
 pip install openai streamlit python-dotenv
 pip install PyPDF2
 
-# run app
+# for windows
 .\venv\Scripts\activate
-streamlit run src/app.py
+# for linux
+source venv/Scripts/activate
+
+# run app
+streamlit run src/main.py
