@@ -5,8 +5,11 @@ python -m venv venv
 .\venv\Scripts\activate 
 
 # install packages
-pip install openai streamlit python-dotenv
+pip install openai
+pip install streamlit
+pip install python-dotenv
 pip install PyPDF2
+pip install st-pages
 
 # for windows
 .\venv\Scripts\activate

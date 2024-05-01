@@ -14,12 +14,21 @@ st.set_page_config(
 show_pages(
     [
         Page("src/main.py", "Home", "🏠"),
-        Page("src/pages/recruitment_app.py", "HADA Recruiter", "🧚"),
         Page("src/pages/load_profiles.py", "Profile Loader", ":book:"),
-        Page("src/pages/recruitment_search.py", "Recruitment Search", "🔎"),
-        Page("src/pages/dashboard.py", "Dashboard", "📊"),
+        Page("src/pages/recruitment_search.py", "Search Candidates", "🔎"),
+        Page("src/pages/dashboard_candidates.py", "Dashboard Candidates", "📊"),
+        Page("src/pages/recruitment_app.py", "HADA Recruiter Interview", "🧚"),
+        Page("src/pages/dashboard_interview.py", "Dashboard Interview", "📊")
     ]
 )
+
+def menu_messages():
+    st.sidebar.subheader("💬 About")
+    st.sidebar.markdown("""AI chat that searches for the best candidates on the Endava profiles site the candidates and tries to identify profiles according to a job posting requirement.
+Also, the interviewer's assistant can interview the candidate and evaluate him based on technical aspects as well as company values. The interviewer's assistant shows the strengths and weaknesses of every candidate.""")
+
+    st.sidebar.subheader("🙍‍♀️ About Me")
+    st.sidebar.markdown("I am an AI-powered interviewer, ready to find the best candidate!")
 
 # load environment vars
 load_dotenv()
@@ -34,19 +43,10 @@ def body():
     st.code("4. Make the interview for the candidate.")
     st.code("5. See the results on the final dashboard.")
 
-def menu():
-    st.sidebar.subheader("💬 About")
-    st.sidebar.markdown("""AI chat that searches for the best candidates on the Endava profiles site the candidates and tries to identify profiles according to a job posting requirement.
-Also, the interviewer's assistant can interview the candidate and evaluate him based on technical aspects as well as company values. 
-At the end of the interview, the interviewer's assistant shows the strengths and weaknesses of every candidate.""")
-
-    st.sidebar.subheader("🙍‍♀️ About Me")
-    st.sidebar.markdown("I am an AI-powered interviewer, ready to find the best candidate!")
-
 
 if __name__ == "__main__":
     body()
-    menu()
+    menu_messages()
 
 
 

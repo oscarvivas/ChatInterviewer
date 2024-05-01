@@ -3,6 +3,7 @@ from openai import AzureOpenAI
 from dotenv import load_dotenv
 import os
 import streamlit as st
+import menu_info
 
 #Config Page
 st.set_page_config(
@@ -64,19 +65,8 @@ def ask_openai (chatMessages):
     except Exception as e:
         return str(e) # Return the exception as a string for debugging 
     
-def menu():
-    st.title("💬 AI-dava Recruiter")
-
-    st.sidebar.subheader("About")
-    st.sidebar.markdown("This is a chat interviewing application.")
-
-    st.sidebar.subheader("Instructions")
-    st.sidebar.markdown("Answer the questions asked by the interviewer using the chat interface.")
-
-    st.sidebar.subheader("About Me")
-    st.sidebar.markdown("I am an AI-powered interviewer, ready to ask you questions!")
 
 if __name__ == "__main__":
 
-    menu()
+    menu_info.menu_messages()
     interview()

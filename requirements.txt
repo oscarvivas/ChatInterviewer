@@ -1,3 +1,5 @@
-altair
-pandas
+openai
 streamlit
+python-dotenv
+PyPDF2
+st-pages

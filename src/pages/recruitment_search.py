@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import os
 import streamlit as st
 from pathlib import Path
+import menu_info
 
 # load environment vars
 load_dotenv()
@@ -18,17 +19,17 @@ client = AzureOpenAI (
 )
 
 
-def analyze_cv (cv_text):
+def analyze_cv (position, skills, cv_text):
     try:
         # Make an API call to the ChatCompletion model
-        prompt = """As a recruiter, your task is to analyze the next resume for an open position for {Frontend}. you seek the candidate softskills and match them with the company values: 
+        prompt = f"""As a recruiter, your task is to analyze the next resume for an open position for {position}. you seek the candidate softskills and match them with the company values: 
 * Smart: We employ clever people who bring skills, experience and talent to craft smart solutions for our customers. 
 * Thoughtful: We care deeply about people, whether they are our employees, customers or our broader communities.
 * Open: We have confidence in our abilities, approach and people, so we are open and transparent.
 * Adaptable: We embrace change and remain flexible, allowing us to operate successfully in complex environments.
 * Trusted: We build our relationships on trust and integrity.
 and generate a bulets with every company value and rate the values with: low, medium or high 
-In adition you should evaluate if the candidate have the next hardskills {javascript, css}
+In adition you should evaluate if the candidate have the next hardskills {skills}
 and generate a bulets with the hardskills and if have the skill or not
 and the english level '{cv_text}'"""
         response = client.chat.completions.create(
@@ -76,24 +77,10 @@ def load_profiles():
                 #texto_pdfs.append(texto)
     #return texto_pdfs        
 
-def menu():
-    st.title("💬 Chat Assistant")
-
-    st.sidebar.subheader("About")
-    st.sidebar.markdown("This is a chat interviewing application.")
-
-    st.sidebar.subheader("Instructions")
-    st.sidebar.markdown("Answer the questions asked by the interviewer using the chat interface.")
-
-    st.sidebar.subheader("About Me")
-    st.sidebar.markdown("I am an AI-powered interviewer, ready to ask you questions!")
-
-
 
 if __name__ == "__main__":
 
-    menu()
+    menu_info.menu_messages()
     load_profiles()
-
 
    

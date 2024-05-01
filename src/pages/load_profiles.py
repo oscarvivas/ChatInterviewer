@@ -34,7 +34,8 @@ def analyze_cv (cv_text):
         The table must have the following structure [name, technology, years of experience] '{cv_text}'"""
         response = client.chat.completions.create(
             model="gpt-35-turbo-0613", # Ensure the engine name is correct for your setup 
-            messages=[{"role": "system", "content": prompt}]
+            messages=[{"role": "system", "content": prompt}],
+            limit=1000
         )    
         # Extract the message content from the response
         answer = response.choices[0].message.content
