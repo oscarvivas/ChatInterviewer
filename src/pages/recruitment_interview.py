@@ -7,8 +7,8 @@ import menu_info
 
 #Config Page
 st.set_page_config(
-    page_title="Recuitment App",
-    page_icon="💬",
+    page_title="Recuitment Interview",
+    page_icon="🧚‍♀️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -69,4 +69,4 @@ def ask_openai (chatMessages):
 if __name__ == "__main__":
 
     menu_info.menu_messages()
-    interview()
+    # interview()

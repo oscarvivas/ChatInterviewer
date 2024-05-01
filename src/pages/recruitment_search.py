@@ -11,6 +11,14 @@ import menu_info
 # load environment vars
 load_dotenv()
 
+#Config Page
+st.set_page_config(
+    page_title="Seacrh Profile",
+    page_icon="🔎",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
 # create a openai client
 client = AzureOpenAI (
     api_key=os.getenv("OPENAI_API_KEY"),
@@ -81,6 +89,6 @@ def load_profiles():
 if __name__ == "__main__":
 
     menu_info.menu_messages()
-    load_profiles()
+    #load_profiles()
 
    

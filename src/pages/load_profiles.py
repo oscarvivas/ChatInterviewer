@@ -6,11 +6,12 @@ from dotenv import load_dotenv
 import os
 import streamlit as st
 from pathlib import Path
+import menu_info
 
 #Config Page
 st.set_page_config(
-    page_title="Load Profiles",
-    page_icon="💬",
+    page_title="Profile Loader",
+    page_icon="book",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -62,24 +63,10 @@ def load_profiles():
                 #texto_pdfs.append(texto)
     #return texto_pdfs        
 
-def menu():
-    st.title("💬 Chat Assistant")
-
-    st.sidebar.subheader("About")
-    st.sidebar.markdown("This is a chat interviewing application.")
-
-    st.sidebar.subheader("Instructions")
-    st.sidebar.markdown("Answer the questions asked by the interviewer using the chat interface.")
-
-    st.sidebar.subheader("About Me")
-    st.sidebar.markdown("I am an AI-powered interviewer, ready to ask you questions!")
-
-
 
 if __name__ == "__main__":
 
-    menu()
-    load_profiles()
-
+    menu_info.menu_messages()
+    # load_profiles()
 
    

@@ -3,6 +3,10 @@ from dotenv import load_dotenv
 import streamlit as st
 from st_pages import Page, show_pages, add_page_title
 
+# load environment vars
+load_dotenv()
+
+#Config Page
 st.set_page_config(
     page_title="HADA - Hiring Assistant for Endava",
     page_icon="🧚‍♀️",
@@ -17,7 +21,7 @@ show_pages(
         Page("src/pages/load_profiles.py", "Profile Loader", ":book:"),
         Page("src/pages/recruitment_search.py", "Search Candidates", "🔎"),
         Page("src/pages/dashboard_candidates.py", "Dashboard Candidates", "📊"),
-        Page("src/pages/recruitment_app.py", "HADA Recruiter Interview", "🧚"),
+        Page("src/pages/recruitment_interview.py", "HADA Recruiter Interview", "🧚"),
         Page("src/pages/dashboard_interview.py", "Dashboard Interview", "📊")
     ]
 )
@@ -30,8 +34,6 @@ Also, the interviewer's assistant can interview the candidate and evaluate him b
     st.sidebar.subheader("🙍‍♀️ About Me")
     st.sidebar.markdown("I am an AI-powered interviewer, ready to find the best candidate!")
 
-# load environment vars
-load_dotenv()
 
 def body():
     st.image('images/endava_logo.jpg', caption='Technology is our how. And people are our why.')
@@ -45,8 +47,8 @@ def body():
 
 
 if __name__ == "__main__":
-    body()
     menu_messages()
+    body()
 
 
 
