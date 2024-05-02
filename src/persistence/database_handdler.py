@@ -2,6 +2,7 @@ import re
 import chromadb
 from chromadb.config import Settings
 
+
 def connect_database():
     client_database = chromadb.PersistentClient(path="./database/", settings=Settings(allow_reset=True))
     #client_database = chromadb.HttpClient()

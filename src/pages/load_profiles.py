@@ -32,6 +32,12 @@ client = AzureOpenAI (
     api_version=os.getenv("API_VERSION") # Ensure you use the correct API version
 )
 
+def extract_name(document):
+    name = ""
+    clean_text = document.replace("\n", "") 
+    if re.search('Name:(.*)Core Skill', clean_text):
+       name = re.search('Name:(.*)Core Skill', clean_text).group(1).strip()
+    return name
 
 def store_embedding (ids, metadatas, documents):
     try:
@@ -111,10 +117,7 @@ def load_profiles():
                 
                 response = extract_data_cv(cv_mess_text)
                 documents.append(response)
-
-                name = ""
-                if re.search('Name:(.+?)Core Skill', response):
-                    name = re.search('Name:(.+?)Core Skill', response).group(1)
+                name = extract_name(response)
                 source = {}
                 source["source"] = file
                 metadatas.append(source)
@@ -132,9 +135,7 @@ def show_profiles():
     collection = client_database.get_collection(name="embedding_profiles")
 
     for document in collection.get()["documents"]:
-        name = ""
-        if re.search('Name:(.*)\nCore Skill', str(document)):
-            name = re.search('Name:(.*)\nCore Skill', document).group(1).strip()
+        name = extract_name(document)
         st.chat_message("system").write(name)
         st.chat_message("system").write(document)
 

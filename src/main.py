@@ -44,7 +44,7 @@ def body():
     st.code("3. See the candidates into the candidate dashboard.")
     st.code("4. Make the interview for the candidate.")
     st.code("5. See the results on the final dashboard.")
-
+    st.code("Developed with ❤️ for Endava")
 
 if __name__ == "__main__":
     menu_messages()

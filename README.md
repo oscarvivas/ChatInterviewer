@@ -31,9 +31,10 @@ PROFILES_PATH=<ABSOLUTE PROJECT PATH>
 
 ## 🚀 Usage
 
-The next command run the App
+The next commands run the App
 
 ```python
+chroma run
 streamlit run src/main.py
 ```
 
