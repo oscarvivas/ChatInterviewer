@@ -18,6 +18,7 @@ pip install streamlit
 pip install python-dotenv
 pip install PyPDF2
 pip install st-pages
+pip install chromadb
 ```
 
 Also, you should create a .env file with the next keys on the root folder 

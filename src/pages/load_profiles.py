@@ -1,12 +1,18 @@
 # libraries to import
 import os
-import PyPDF2
-from openai import AzureOpenAI
-from dotenv import load_dotenv
-import os
 import streamlit as st
-from pathlib import Path
+from dotenv import load_dotenv
+from openai import AzureOpenAI
+import PyPDF2
 import menu_info
+import re
+import chromadb
+from chromadb.config import Settings
+
+# connect database
+def connect_database():
+    client_database = chromadb.PersistentClient(path="./database/", settings=Settings(allow_reset=True))
+    return client_database
 
 #Config Page
 st.set_page_config(
@@ -27,46 +33,123 @@ client = AzureOpenAI (
 )
 
 
-def analyze_cv (cv_text):
+def store_embedding (ids, metadatas, documents):
+    try:
+        client_database = connect_database()
+        client_database.reset()
+        collection = client_database.get_or_create_collection(name="embedding_profiles")
+        collection.add(
+            documents=documents,
+            metadatas=metadatas,
+            ids=ids
+        )
+        print(collection.get()["documents"])
+
+    except Exception as e:
+        print(e)
+        return str(e) # Return the exception as a string for debugging 
+
+
+def extract_data_cv (cv_text):
     try:
         # Make an API call to the ChatCompletion model
-        prompt = """You are an expert recruiter and you must analyze the following resume and extract the candidate name create a table with the technologies that the candidate has used,
-        and the years of experience they have in each technology. 
-        The table must have the following structure [name, technology, years of experience] '{cv_text}'"""
+        prompt = f"""You are an expert in recruitment, 
+
+you should extract the name, core skill, English level, technologies, and soft skills from the resume
+
+Also, you should seek the candidate's skills and match them with the company values: 
+* Smart: We employ clever people who bring skills, experience, and talent to craft smart solutions for our customers. 
+* Thoughtful: We care deeply about people, whether they are our employees, customers, or our broader communities.
+* Open: We have confidence in our abilities, approach, and people, so we are open and transparent.
+* Adaptable: We embrace change and remain flexible, allowing us to operate successfully in complex environments.
+* Trusted: We build our relationships on trust and integrity. 
+and rate every value with the next values: low, medium, or high
+
+You should generate the result in text format 
+
+You should use the next resume '{cv_text}'
+"""
         response = client.chat.completions.create(
             model="gpt-35-turbo-0613", # Ensure the engine name is correct for your setup 
-            messages=[{"role": "system", "content": prompt}],
-            limit=1000
+            messages=[{"role": "system", "content": prompt}]
         )    
         # Extract the message content from the response
         answer = response.choices[0].message.content
         return answer
     except Exception as e:
+        print(e)
         return str(e) # Return the exception as a string for debugging 
+
 
 
 def load_profiles():
     path = os.getenv("PROFILES_PATH")
+    profiles_list = [os.listdir(path)[0], os.listdir(path)[1]]
+    id = 0
+
+    ids = []
+    documents = []
+    metadatas = []
+
+    st.chat_message("system").write(f"loading Profiles...")
 
     # loop over directory files
-    for file in os.listdir(path):
+    for file in profiles_list:
+
         if file.endswith(".pdf"):  # check if the file has pdf extension
             path_file = os.path.join(path, file)
+
+            print(path_file)
+
             with open(path_file, "rb") as pdf_file:
                 pdf_reader = PyPDF2.PdfReader(pdf_file)
                 cv_mess_text = ""
+
                 # loop over PDF pages
                 for page_number in range(len(pdf_reader.pages)):
                     cv_mess_text += pdf_reader.pages[page_number].extract_text()
-                response = analyze_cv(cv_mess_text)
-                st.chat_message("system").write(response)
-                #texto_pdfs.append(texto)
-    #return texto_pdfs        
+                
+                response = extract_data_cv(cv_mess_text)
+                documents.append(response)
+
+                name = ""
+                if re.search('Name:(.+?)Core Skill', response):
+                    name = re.search('Name:(.+?)Core Skill', response).group(1)
+                source = {}
+                source["source"] = file
+                metadatas.append(source)
+
+                id += 1
+                ids.append("id"+ str(id))
+
+    store_embedding(ids, metadatas, documents)
+    st.chat_message("system").write(f"{id} Profiles were loaded.")
+
+
+
+def show_profiles():
+    client_database = connect_database()
+    collection = client_database.get_collection(name="embedding_profiles")
+
+    for document in collection.get()["documents"]:
+        name = ""
+        if re.search('Name:(.*)\nCore Skill', str(document)):
+            name = re.search('Name:(.*)\nCore Skill', document).group(1).strip()
+        st.chat_message("system").write(name)
+        st.chat_message("system").write(document)
+
+    #for element in collection.get()["metadatas"]:
+    #    st.chat_message("system").write(element)
+
 
 
 if __name__ == "__main__":
 
     menu_info.menu_messages()
-    # load_profiles()
+    
+    if st.button('Load Profiles'):
+        load_profiles()
 
-   
+    if st.button('Show Profiles'):
+        show_profiles()
+
