@@ -7,11 +7,11 @@ With the expertise to compare the necessary technical and soft skills, so they a
 Then HADA will move on to interview the candidates and finalize the selection by choosing the one who is better for the role.
 
 The team behind HADA
-Nicolas Angelini
-Tamara Carrizo Bertuzzi
-Hassan Marquez
-Martin Saponara
-Oscar Vivas
+- Nicolas Angelini
+- Tamara Carrizo Bertuzzi
+- Hassan Marquez
+- Martin Saponara
+- Oscar Vivas
 
 Mentor: Mario Ceron
 
