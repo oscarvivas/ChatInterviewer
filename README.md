@@ -44,7 +44,7 @@ streamlit run src/main.py
 * Hassan Marquez
 * Tamara Carrizo Bertuzzi 
 * Nicolas Angelini
-* Martin Ezequiel
+* Martin Saponara
 
 
 ## 🙏 License
