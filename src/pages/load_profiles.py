@@ -49,7 +49,7 @@ def store_embedding (ids, metadatas, documents):
             metadatas=metadatas,
             ids=ids
         )
-        print(collection.get()["documents"])
+        #print(collection.get()["documents"])
 
     except Exception as e:
         print(e)
@@ -90,14 +90,15 @@ You should use the next resume '{cv_text}'
 
 def load_profiles():
     path = os.getenv("PROFILES_PATH")
-    profiles_list = [os.listdir(path)[0], os.listdir(path)[1]]
+    #profiles_list = [os.listdir(path)[0], os.listdir(path)[1]]
+    profiles_list = os.listdir(path)
     id = 0
 
     ids = []
     documents = []
     metadatas = []
 
-    st.chat_message("system").write(f"loading Profiles...")
+    st.chat_message("assistant").write(f"loading Profiles...")
 
     # loop over directory files
     for file in profiles_list:
@@ -119,14 +120,14 @@ def load_profiles():
                 documents.append(response)
                 name = extract_name(response)
                 source = {}
-                source["source"] = file
+                source["source"] = name
                 metadatas.append(source)
 
                 id += 1
                 ids.append("id"+ str(id))
 
     store_embedding(ids, metadatas, documents)
-    st.chat_message("system").write(f"{id} Profiles were loaded.")
+    st.chat_message("assistant").write(f"{id} Profiles were loaded.")
 
 
 
@@ -136,11 +137,11 @@ def show_profiles():
 
     for document in collection.get()["documents"]:
         name = extract_name(document)
-        st.chat_message("system").write(name)
-        st.chat_message("system").write(document)
+        st.chat_message("assistant").write(name)
+        st.chat_message("assistant").write(document)
 
     #for element in collection.get()["metadatas"]:
-    #    st.chat_message("system").write(element)
+    #    st.chat_message("assistant").write(element)
 
 
 
