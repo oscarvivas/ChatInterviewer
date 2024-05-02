@@ -1,12 +1,13 @@
 # libraries to import
 import os
-import PyPDF2
 from openai import AzureOpenAI
 from dotenv import load_dotenv
 import os
 import streamlit as st
-from pathlib import Path
 import menu_info
+import chromadb
+from chromadb.config import Settings
+import re
 
 # load environment vars
 load_dotenv()
@@ -26,23 +27,45 @@ client = AzureOpenAI (
     api_version=os.getenv("API_VERSION") # Ensure you use the correct API version
 )
 
+# connect database
+def connect_database():
+    client_database = chromadb.PersistentClient(path="./database/", settings=Settings(allow_reset=True))
+    return client_database
 
-def analyze_cv (position, skills, cv_text):
+
+def extract_name(document):
+    name = ""
+    clean_text = document.replace("\n", "") 
+    if re.search('Name:(.*)Core Skill', clean_text):
+       name = re.search('Name:(.*)Core Skill', clean_text).group(1).strip()
+    return name
+
+
+def simple_request (messages_list):
     try:
-        # Make an API call to the ChatCompletion model
-        prompt = f"""As a recruiter, your task is to analyze the next resume for an open position for {position}. you seek the candidate softskills and match them with the company values: 
-* Smart: We employ clever people who bring skills, experience and talent to craft smart solutions for our customers. 
-* Thoughtful: We care deeply about people, whether they are our employees, customers or our broader communities.
-* Open: We have confidence in our abilities, approach and people, so we are open and transparent.
-* Adaptable: We embrace change and remain flexible, allowing us to operate successfully in complex environments.
-* Trusted: We build our relationships on trust and integrity.
-and generate a bulets with every company value and rate the values with: low, medium or high 
-In adition you should evaluate if the candidate have the next hardskills {skills}
-and generate a bulets with the hardskills and if have the skill or not
-and the english level '{cv_text}'"""
         response = client.chat.completions.create(
             model="gpt-35-turbo-0613", # Ensure the engine name is correct for your setup 
-            messages=[{"role": "system", "content": prompt}]
+            messages=messages_list
+        )    
+        # Extract the message content from the response
+        answer = response.choices[0].message.content
+        # print(answer)
+        return answer
+    except Exception as e:
+        return str(e) # Return the exception as a string for debugging 
+
+
+def analyze_resume (resume, position_description):
+    try:
+        # Make an API call to the ChatCompletion model
+        prompt = f"""You are an expert recruiter,
+You must analyze a resume and rate with a numerical value between 1 to 10 if the candidate meet with next job description '{position_description}', 
+You should analyze the next resume '{resume}'
+You should provide a rating between 1 to 10 if the candidate meet with job description
+"""
+        response = client.chat.completions.create(
+            model="gpt-35-turbo-0613", # Ensure the engine name is correct for your setup 
+            messages=[{"role": "assistant", "content": prompt}]
         )    
         # Extract the message content from the response
         answer = response.choices[0].message.content
@@ -51,44 +74,72 @@ and the english level '{cv_text}'"""
         return str(e) # Return the exception as a string for debugging 
 
 
-def analyze_cv (cv_text):
+
+def initialize_chat():
     try:
         # Make an API call to the ChatCompletion model
-        prompt = "You are an expert recruiter and you must analyze the following resume and create a table with the technologies that the candidate has used, and the years of experience they have in each technology. The table must have the following structure [name, technology, years of experience] '{cv_text}'"
+        prompt = f"""You are a recruitment assistant, your job is to ask a series of questions to the user to identify the position you want to hire.
+Chain of thought:
+1. introduce yourself as a recruiting assistant willing to help search for a candidate
+2. identify the [position] you want to hire
+3. identify the [skills] that the candidate must have
+4. identify whether which of the following values the candidate should have [Smart, Thoughtful, Open, Adaptable, Trusted]
+5. generate a summary of position description and finalize the chat with the word searching"""
         response = client.chat.completions.create(
             model="gpt-35-turbo-0613", # Ensure the engine name is correct for your setup 
-            messages=[{"role": "system", "content": prompt}]
+            messages=[{"role": "assistant", "content": prompt}]
         )    
         # Extract the message content from the response
         answer = response.choices[0].message.content
         return answer
     except Exception as e:
         return str(e) # Return the exception as a string for debugging 
-    
+
+def evaluate_profiles(position_description):
+    client_database = connect_database()
+    collection = client_database.get_collection(name="embedding_profiles")
+
+    for document in [collection.get()["documents"][1]]:
+        print(document)
+        name = extract_name(document)
+        result = analyze_resume (document, position_description)
+        st.chat_message("assistant").write(name)
+        st.chat_message("assistant").write(result)
 
 
-def load_profiles():
-    path = os.getenv("PROFILES_PATH")
-
-    # loop over directory files
-    for file in os.listdir(path):
-        if file.endswith(".pdf"):  # check if the file has pdf extension
-            path_file = os.path.join(path, file)
-            with open(path_file, "rb") as pdf_file:
-                pdf_reader = PyPDF2.PdfReader(pdf_file)
-                cv_mess_text = ""
-                # loop over PDF pages
-                for page_number in range(len(pdf_reader.pages)):
-                    cv_mess_text += pdf_reader.pages[page_number].extract_text()
-                response = analyze_cv(cv_mess_text)
-                st.chat_message("system").write(response)
-                #texto_pdfs.append(texto)
-    #return texto_pdfs        
+def clean_chat():
+    response = initialize_chat()
+    st.session_state["messages"] = [{"role": "assistant", "content": response}]
 
 
 if __name__ == "__main__":
 
     menu_info.menu_messages()
-    #load_profiles()
 
+    #initilize position info
+    position_description = ""
+
+    if st.button('Clean Chat'):
+        clean_chat()
+
+    if "messages" not in st.session_state:
+        response = initialize_chat()
+        st.session_state["messages"] = [{"role": "assistant", "content": response}]
+
+    for msg in st.session_state.messages:
+        st.chat_message(msg["role"]).write(msg["content"])
+
+
+    if (prompt := st.chat_input()) and (position_description == ""):
+
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        st.chat_message("user").write(prompt)
+        response = simple_request (st.session_state.messages)
+        st.session_state.messages.append({"role": "assistant", "content": response})
+        st.chat_message("assistant").write(response)
+
+        if ('searching' in response) or ('search' in prompt):
+            position_description = response
+            print('Success!\n' + position_description)
+            evaluate_profiles(position_description)
    
