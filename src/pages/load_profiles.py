@@ -76,7 +76,7 @@ You should generate the result in text format
 You should use the next resume '{cv_text}'
 """
         response = client.chat.completions.create(
-            model="gpt-35-turbo-0613", # Ensure the engine name is correct for your setup 
+            model=os.getenv("OPENAI_MODEL"), # Ensure the engine name is correct for your setup 
             messages=[{"role": "system", "content": prompt}]
         )    
         # Extract the message content from the response

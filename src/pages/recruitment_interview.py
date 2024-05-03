@@ -56,7 +56,7 @@ def ask_openai (chatMessages):
     try:
         # Make an API call to the ChatCompletion model
         response = client.chat.completions.create(
-            model="gpt-35-turbo-0613", # Ensure the engine name is correct for your setup 
+            model=os.getenv("OPENAI_MODEL"), # Ensure the engine name is correct for your setup 
             messages=chatMessages
         )    
         # Extract the message content from the response

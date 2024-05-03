@@ -54,7 +54,7 @@ skills: 8.5
 values: 7.3
 """
         response = client.chat.completions.create(
-            model="gpt-35-turbo-0613", # Ensure the engine name is correct for your setup 
+            model=os.getenv("OPENAI_MODEL"), # Ensure the engine name is correct for your setup 
             messages=[{"role": "system", "content": prompt}]
         )    
         # Extract the message content from the response
@@ -69,7 +69,7 @@ def step1_introduce_assitent():
         # Make an API call to the ChatCompletion model
         prompt = "You are an assistant for recruitment, your job is help to the recruiter, introduce yourself as a recruiting assistant willing to help search for a candidate and ask what position the recruiter wants to hire"
         response = client.chat.completions.create(
-            model="gpt-35-turbo-0613", # Ensure the engine name is correct for your setup 
+            model=os.getenv("OPENAI_MODEL"), # Ensure the engine name is correct for your setup 
             messages=[{"role": "system", "content": prompt}]
         )    
         # Extract the message content from the response
@@ -83,7 +83,7 @@ def step2_identify_position(description):
         # Make an API call to the ChatCompletion model
         prompt = f"You are an expert in recruitment, your job is help to the recruiter identify the position that the recruiter wants to hire using the next description '{description}'"
         response = client.chat.completions.create(
-            model="gpt-35-turbo-0613", # Ensure the engine name is correct for your setup 
+            model=os.getenv("OPENAI_MODEL"), # Ensure the engine name is correct for your setup 
             messages=[{"role": "system", "content": prompt}]
         )    
         # Extract the message content from the response
@@ -98,7 +98,7 @@ def step3_identify_skills(position, description):
         # Make an API call to the ChatCompletion model
         prompt = f"You are an expert in recruitment, your job is help to the recruiter identify the skills that the candidate should have for the position {position} using the next description {description}"
         response = client.chat.completions.create(
-            model="gpt-35-turbo-0613", # Ensure the engine name is correct for your setup 
+            model=os.getenv("OPENAI_MODEL"), # Ensure the engine name is correct for your setup 
             messages=[{"role": "system", "content": prompt}]
         )    
         # Extract the message content from the response
@@ -113,7 +113,7 @@ def step3_identify_values(position, description):
         # Make an API call to the ChatCompletion model
         prompt = f"You are an expert in recruitment, your job is help to the recruiter identify the next company values the candidate should meet [Smart, Thoughtful, Open, Adaptable, Trusted] for the position {position} using the next description {description}"
         response = client.chat.completions.create(
-            model="gpt-35-turbo-0613", # Ensure the engine name is correct for your setup 
+            model=os.getenv("OPENAI_MODEL"), # Ensure the engine name is correct for your setup 
             messages=[{"role": "system", "content": prompt}]
         )    
         # Extract the message content from the response

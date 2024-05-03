@@ -45,7 +45,7 @@ def extract_name(document):
 def simple_request (messages_list):
     try:
         response = client.chat.completions.create(
-            model="gpt-35-turbo-0613", # Ensure the engine name is correct for your setup 
+            model=os.getenv("OPENAI_MODEL"), # Ensure the engine name is correct for your setup 
             messages=messages_list
         )    
         # Extract the message content from the response
@@ -77,7 +77,7 @@ def analyze_resume (resume, position_description):
         3. You should divide the number in the previous step by the number in the first step and show the result in a bullet.
 """
         response = client.chat.completions.create(
-            model="gpt-35-turbo-0613", # Ensure the engine name is correct for your setup 
+            model=os.getenv("OPENAI_MODEL"), # Ensure the engine name is correct for your setup 
             messages=[{"role": "assistant", "content": prompt}]
         )    
         # Extract the message content from the response
@@ -135,7 +135,7 @@ Chain of thought:
 4. identify whether which of the following values the candidate should have [Smart, Thoughtful, Open, Adaptable, Trusted]
 5. generate a summary of position description and finalize the chat with the word searching"""
         response = client.chat.completions.create(
-            model="gpt-35-turbo-0613", # Ensure the engine name is correct for your setup 
+            model=os.getenv("OPENAI_MODEL"), # Ensure the engine name is correct for your setup 
             messages=[{"role": "assistant", "content": prompt}]
         )    
         # Extract the message content from the response
