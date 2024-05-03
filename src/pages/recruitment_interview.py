@@ -36,20 +36,20 @@ prompt = """You are an expert recruiter and your name is HADA, who evaluates the
             When the user starts the conversation, you should introduce yourself in a friendly way."""
 
 def interview():
-    if "messages" not in st.session_state:
+    if "messages2" not in st.session_state:
         # Init the ChatCompletion model with the prompt
         responseMessage = ask_openai([{"role": "system", "content": prompt}])
-        st.session_state["messages"] = [{"role": "system", "content": responseMessage}]
+        st.session_state["messages2"] = [{"role": "system", "content": responseMessage}]
         #st.session_state["messages"] = [{"role": "system", "content": prompt}] 
 
     user_input = st.chat_input()
     if user_input: 
-        st.session_state["messages"].append({"role": "user", "content": user_input }) 
+        st.session_state["messages2"].append({"role": "user", "content": user_input }) 
         #st.chat_message("user").write(user_input)      -- Self interview
-        responseMessage = ask_openai(st.session_state["messages"])
-        st.session_state["messages"].append({"role": "system", "content": responseMessage})
+        responseMessage = ask_openai(st.session_state["messages2"])
+        st.session_state["messages2"].append({"role": "system", "content": responseMessage})
         
-    for msg in st.session_state["messages"]:
+    for msg in st.session_state["messages2"]:
         st.chat_message(msg["role"]).write(msg["content"])
 
 def ask_openai (chatMessages):
@@ -69,4 +69,4 @@ def ask_openai (chatMessages):
 if __name__ == "__main__":
 
     menu_info.menu_messages()
-    # interview()
+    interview()
