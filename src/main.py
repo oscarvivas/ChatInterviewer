@@ -18,12 +18,12 @@ st.set_page_config(
 show_pages(
     [
         Page("src/main.py", "Home", "🏠"),
+        Page("src/pages/uploader_files.py", "File Uploader", "📂"),
         Page("src/pages/load_profiles.py", "Profile Loader", ":book:"),
         Page("src/pages/recruitment_search.py", "Search Candidates", "🔎"),
         Page("src/pages/dashboard_candidates.py", "Dashboard Candidates", "📊"),
         Page("src/pages/recruitment_interview.py", "HADA Recruiter Interview", "🧚"),
         Page("src/pages/dashboard_interview.py", "Dashboard Interview", "📊"),
-        Page("src/pages/uploader_files.py", "File Uploader", "📂")
     ]
 )
 
