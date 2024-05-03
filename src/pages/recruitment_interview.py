@@ -47,8 +47,12 @@ you should analize the skills and match them with the company values:
 * Trusted: We build our relationships on trust and integrity. 
 and rate every value with the next values: low, medium, or high
 You should generate the result in text format 
-You should generate a table with the next format [Value, Rating]
-You should use the next interview """
+You should generate a list of bullets with value and rating take into account the next exmaple
+* Smart: low
+* Thoughtful: low
+* Open: low
+* Adaptable: low
+* Trusted: low """
 
 final_values = []
 final_qualifications = []
