@@ -10,3 +10,57 @@ if re.search('Name:(.*)\nCore Skill', string):
     name = re.search('Name:(.*)\nCore Skill', string).group(1)
 
 print(name)
+
+
+string = """Yes, I understand the task. Here's how I'll proceed:
+
+Count the skills mentioned in the job description.
+Count how many of those skills are also listed in the candidate's resume.
+Divide the number of matching skills by the total number of skills mentioned in the job description to calculate the match percentage.
+Let's start by listing the skills mentioned in the job description and the candidate's resume:
+
+Skills mentioned in the job description:
+
+C#
+Visual Studio
+SQL Server
+React
+Node.js
+Angular
+HTML
+CSS
+JavaScript
+RESTful APIs
+Git
+Skills mentioned in the candidate's resume:
+
+Java
+Python
+SQL
+Microsoft SQL Server
+HTML
+CSS
+PostgreSQL
+Oracle
+MongoDB
+Selenium
+Git
+GitHub
+Now, let's count the matching skills:
+
+Count of skills mentioned in the job description: 11
+Count of matching skills between the job description and the resume: 3 (HTML, CSS, Git)
+Now, let's calculate the match percentage:
+
+Match percentage: (3 / 11) * 100 = 27.27%
+Here's the result presented as a bullet point:
+
+Match percentage: 27.27%
+"""
+
+last_line = string.splitlines()[-1]
+print(last_line)
+
+percentaje = re.findall('\d*%', last_line)[0]
+print(percentaje)
+

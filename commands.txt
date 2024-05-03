@@ -18,4 +18,5 @@ pip install chromadb
 source venv/Scripts/activate
 
 # run app
+chroma run
 streamlit run src/main.py

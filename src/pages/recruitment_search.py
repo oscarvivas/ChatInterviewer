@@ -8,6 +8,7 @@ import menu_info
 import chromadb
 from chromadb.config import Settings
 import re
+import pandas as pd
 
 # load environment vars
 load_dotenv()
@@ -55,24 +56,72 @@ def simple_request (messages_list):
         return str(e) # Return the exception as a string for debugging 
 
 
+def extract_percentage(response):
+    last_line = response.splitlines()[-1]
+    print(last_line)
+    percentage = re.findall('[0-9]+%', last_line)[0]
+    print(percentage)
+    return percentage
+
+
 def analyze_resume (resume, position_description):
     try:
         # Make an API call to the ChatCompletion model
         prompt = f"""You are an expert recruiter,
-You must analyze a resume and rate with a numerical value between 1 to 10 if the candidate meet with next job description '{position_description}', 
-You should analyze the next resume '{resume}'
-You should provide a rating between 1 to 10 if the candidate meet with job description
+        You should use the next resume '{resume}'
+        And identify if the candidate meets with next job description '{position_description}', 
+
+        Chain of thought:
+        1. You should count the skills that the job description has
+        2. You should count what job description's skills are contained  in the resume 
+        3. You should divide the number in the previous step by the number in the first step and show the result in a bullet.
 """
         response = client.chat.completions.create(
             model="gpt-35-turbo-0613", # Ensure the engine name is correct for your setup 
             messages=[{"role": "assistant", "content": prompt}]
         )    
         # Extract the message content from the response
-        answer = response.choices[0].message.content
+        # print(response)
+        if len(response.choices) > 0:
+            answer = response.choices[0].message.content
+            answer = extract_percentage(answer)
+        else:
+            answer = "0%"
         return answer
     except Exception as e:
-        return str(e) # Return the exception as a string for debugging 
+        print(str(e)) # Return the exception as a string for debugging 
+        return "0%" 
 
+
+def delete_collection(collection_name):
+    client_database = connect_database()
+
+    # delete if exits
+    if collection_name in [c.name for c in client_database.list_collections()]:
+        client_database.delete_collection(name=collection_name)
+
+
+
+def store_rating_candidates (ids, metadatas, documents):
+    try:
+        client_database = connect_database()
+
+        collection_name = "candidate_rating"
+        # delete if exits
+        if collection_name in [c.name for c in client_database.list_collections()]:
+            client_database.delete_collection(name=collection_name)
+
+        collection = client_database.get_or_create_collection(name=collection_name)
+        collection.add(
+            documents=documents,
+            metadatas=metadatas,
+            ids=ids
+        )
+        return collection
+
+    except Exception as e:
+        print(str(e))
+        return str(e) # Return the exception as a string for debugging 
 
 
 def initialize_chat():
@@ -96,16 +145,69 @@ Chain of thought:
         return str(e) # Return the exception as a string for debugging 
 
 def evaluate_profiles(position_description):
+    
+    id = 0
+    ids = []
+    documents = []
+    metadatas = []
+
     client_database = connect_database()
     collection = client_database.get_collection(name="embedding_profiles")
 
-    for document in [collection.get()["documents"][1]]:
-        print(document)
+    for document in collection.get()["documents"]:
         name = extract_name(document)
         result = analyze_resume (document, position_description)
-        st.chat_message("assistant").write(name)
-        st.chat_message("assistant").write(result)
 
+        if result != "0%":
+
+            result = result.replace("%", "")
+
+            id += 1
+            ids.append("id"+ str(id))
+
+            document = f"name: {name} rating: {result}"
+            documents.append(document)
+
+            source = {}
+            source["source"] = name
+            metadatas.append(source)        
+
+            #st.chat_message("assistant").write(name)
+            st.chat_message("assistant").write(document)
+
+
+    collection = store_rating_candidates(ids, metadatas, documents)
+    st.chat_message("assistant").write(f"{id} Profiles were analized, please check the candidate dashboard!!")
+
+    data = get_candidate_data(collection)
+    show_data(data)
+
+
+def get_candidate_data(collection):
+    data = {"name":[], "Rate":[]}
+    for document in collection.get()["documents"]:
+        try:
+            name = ""
+            rating = 0
+
+            if re.search('name:(.*)rating:', document):
+                name = re.search('name:(.*)rating:', document).group(1).strip()
+
+            if re.search('rating:(.*)', document):
+                rating = re.search('rating:(.*)', document).group(1).strip()
+
+            data["name"].append(name)
+            data["Rate"].append(rating)
+        except Exception as e:
+            print("Error " + str(e) + " no actions")
+    return data
+
+    
+def show_data(data):
+    dataframe = pd.DataFrame(data)
+    dataframe = dataframe.set_index("name")
+    st.bar_chart(dataframe)
+    
 
 def clean_chat():
     response = initialize_chat()
