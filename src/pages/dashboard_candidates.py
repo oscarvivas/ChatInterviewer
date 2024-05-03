@@ -17,6 +17,8 @@ st.set_page_config(
 # show slidebar messages
 menu_info.menu_messages()
 
+st.title('Candidates rating')
+
 data = {"Candidates":[], "Rating":[]}
 
 # connect database
