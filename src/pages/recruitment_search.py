@@ -15,8 +15,8 @@ load_dotenv()
 
 #Config Page
 st.set_page_config(
-    page_title="Search Profile",
-    page_icon="🔎",
+    page_title="HADA Candidate Finder",
+    page_icon="🧚‍♀️",
     layout="wide",
     initial_sidebar_state="expanded"
 )

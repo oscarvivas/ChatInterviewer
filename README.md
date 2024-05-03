@@ -2,34 +2,35 @@
 
 - ## Overview
 
-AI application is designed to meticulously search through Endava profiles, pinpointing the most suitable candidates based on specific job posting requirements. By leveraging advanced algorithms, it meticulously analyses candidate profiles to identify those that align best with the criteria outlined in the job postings
+Hiring Assistant for Endava is an application designed to help in the process of recruiting new talents.
+HADA Candidate Finder will search and read the different profiles. Pinpointing the most suitable candidates based on the search requirements. 
+By leveraging advanced algorithms, it meticulously analyses candidates' profiles to identify those that align best with the criteria outlined in the job postings.
 
-The interviewer's assistant conducts interviews and assesses candidates based on both technical competencies and alignment with company values.
-
-After each interview, the interviewer's assistant provides a comprehensive assessment of each candidate's strengths and weaknesses. Additionally. Finally, users can access a dashboard showcasing insights gathered from each candidate's interview.
+HADA Interview Analyzer will perform an analysis of the interview by the recruiter and the candidates and will provide as well a comprehensive assessment of each candidate's strengths and weaknesses. 
+The power of AI will provide another insight into selecting the perfect person for the job. 
 
 - ## How to use HADA
 Interacting with HADA follows a straightforward process via its user-friendly interface. Additionally, users can see instructions through the menu located in the left panel of the application.
 
 ### Instructions:
 
-#### - File loader
+#### - File Uploader
 Load the Endava profiles in the HADA repository.
 
 #### - Profile loader
 Utilize the profile loader function in HADA to import Endava profiles into its database. This feature offers two options: "Load Profiles" to import PDFs from the repository and process, and "Show Profiles" to view candidates' skills and qualifications.
 
-#### - Search candidates
-With the search candidates assistant, you can retrieve the top profiles based on the previously loaded files.
+#### - HADA Candidate Finder
+With the Candidate Finder assistant, you can retrieve the top profiles based on the previously loaded files.
 
 #### - Dashboard candidates
 View the statistics of the candidates' qualifications within the candidate dashboard.
 
-#### - HADA Recruiter interview
-HADA assists recruiters in conducting interviews with selected candidates.
+#### - HADA Interview Analizer
+The Interview Analizer will perform an analysis of the interview by the recruiter and the candidates. Also, will provide a comprehensive assessment of each candidate's strengths and weaknesses. The power of AI will deliver another insight into selecting the perfect person for the job. 
 
-#### - Dashboard Recruiter
-View the final statistics within the Recruiter dashboard.
+#### - Dashboard Interview
+View the final statistics within the dashboard.
 
 
 ## 💻 Architecture
@@ -74,7 +75,7 @@ The following commands execute the application.
     chroma run
     streamlit run src/main.py
 ```
-## 📘 Additional resources
+## 📘 Additional resources and Investigation
 In the following link you can find the additional resources related to the presentation process
 
 

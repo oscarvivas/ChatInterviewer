@@ -2,7 +2,10 @@
 python -m venv venv
 
 # load the environment
-.\venv\Scripts\activate 
+# for windows
+.\venv\Scripts\activate
+# for linux or Mac OS
+source venv/Scripts/activate
 
 # install packages
 pip install openai
@@ -11,11 +14,7 @@ pip install python-dotenv
 pip install PyPDF2
 pip install st-pages
 pip install chromadb
-
-# for windows
-.\venv\Scripts\activate
-# for linux
-source venv/Scripts/activate
+pip install pandas
 
 # run app
 chroma run
