@@ -7,7 +7,7 @@ import menu_info
 
 #Config Page
 st.set_page_config(
-    page_title="Recuitment Interview",
+    page_title="HADA Interview Analyzer",
     page_icon="🧚‍♀️",
     layout="wide",
     initial_sidebar_state="expanded"

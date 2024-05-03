@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+import menu_info
 
 #Config Page
 st.set_page_config(
@@ -18,6 +19,7 @@ for uploaded_file in uploaded_files:
     # st.success("Saved file:", uploaded_file.name)
     # st.write(bytes_data)
     
-
+# show slidebar messages
+menu_info.menu_messages()
 
 
