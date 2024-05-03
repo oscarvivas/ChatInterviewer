@@ -4,6 +4,7 @@ import menu_info
 import chromadb
 import re
 from chromadb.config import Settings
+import altair as alt
 
 #Config Page
 st.set_page_config(
@@ -16,7 +17,7 @@ st.set_page_config(
 # show slidebar messages
 menu_info.menu_messages()
 
-data = {"name":[], "Rate":[]}
+data = {"Candidates":[], "Rating":[]}
 
 # connect database
 def connect_database():
@@ -42,8 +43,8 @@ def get_candidate_data(collection):
     for document in collection.get()["documents"]:
         try:
             
-            data["name"].append(re.search('name:(.*)rating:', document).group(1).strip())
-            data["Rate"].append(float(re.search('rating:(.*)', document).group(1).strip()))
+            data["Candidates"].append(re.search('name:(.*)rating:', document).group(1).strip())
+            data["Rating"].append(float(re.search('rating:(.*)', document).group(1).strip()))
             
         except Exception as e:
             print("Error " + str(e) + " no actions")
@@ -58,9 +59,9 @@ def show_data():
 
     get_candidate_data(collection)
     dataframe = pd.DataFrame(data)
-    dataframe = dataframe.set_index("name")
-
-    st.bar_chart(dataframe)
+    
+    c = (alt.Chart(dataframe).mark_bar().encode( x = 'Candidates', y = 'Rating'))
+    st.altair_chart(c, use_container_width=True, theme="streamlit")
     
 
 
