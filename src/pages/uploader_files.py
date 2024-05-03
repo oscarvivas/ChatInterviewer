@@ -4,7 +4,7 @@ import os
 #Config Page
 st.set_page_config(
     page_title="File Uploader",
-    page_icon="outbox_tray"
+    page_icon="📂"
 )
 
 profiles_path = os.getenv("PROFILES_PATH")

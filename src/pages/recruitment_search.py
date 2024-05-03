@@ -15,7 +15,7 @@ load_dotenv()
 
 #Config Page
 st.set_page_config(
-    page_title="Seacrh Profile",
+    page_title="Search Profile",
     page_icon="🔎",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -127,16 +127,18 @@ def store_rating_candidates (ids, metadatas, documents):
 def initialize_chat():
     try:
         # Make an API call to the ChatCompletion model
-        prompt = f"""You are a recruitment assistant, your job is to ask a series of questions to the user to identify the position you want to hire.
-Chain of thought:
-1. introduce yourself as a recruiting assistant willing to help search for a candidate
-2. identify the [position] you want to hire
-3. identify the [skills] that the candidate must have
-4. identify whether which of the following values the candidate should have [Smart, Thoughtful, Open, Adaptable, Trusted]
-5. generate a summary of position description and finalize the chat with the word searching"""
+        prompt = f"""You are a recruitment assistant, your job is to ask the recruiter who needs your help, a series of questions to identify the position that the recruiter wants to hire.
+        Chain of thought:
+        1. introduce yourself as a recruiting assistant to the recruiter, telling that you are willing to help searching for a candidate
+        2. identify the [position] that the recruiter needs to hire
+        3. identify the [skills] that the potential candidate must have
+        4. identify from the following company values [Smart, Thoughtful, Open, Adaptable, Trusted] which ones the potential candidates have
+        5. then finally, generate a summary of position description and finalize the chat with the word "Searching"
+        This  is your only role, you have to follow the chain of thought mentioned before and you can not do anything else."""
         response = client.chat.completions.create(
             model=os.getenv("OPENAI_MODEL"), # Ensure the engine name is correct for your setup 
-            messages=[{"role": "assistant", "content": prompt}]
+            messages=[{"role": "assistant", "content": prompt}],
+            temperature=0
         )    
         # Extract the message content from the response
         answer = response.choices[0].message.content
