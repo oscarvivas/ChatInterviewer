@@ -48,6 +48,7 @@ pip install PyPDF2
 pip install st-pages
 pip install chromadb
 pip install pandas
+pip install azure-cognitiveservices-speech
 ```
 
 Create a .env file in the root folder containing the respective keys

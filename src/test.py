@@ -1,6 +1,29 @@
 
 import re
 
+text = """Smart: high
+Thoughtful: medium
+Open: medium
+Adaptable: medium
+Trusted: low"""
+
+lines = text.split('\n')
+values = []
+qualifications = []
+
+for line in lines:
+    try:
+        value, qualification = line.split(': ')
+        value = re.sub(r'[^A-Z:a-z0-9]+', '', value.strip())
+        qualification = qualification.strip() 
+        if value in ['Smart', 'Thoughtful', 'Open', 'Adaptable', 'Trusted', 'smart', 'thoughtful', 'open', 'adaptable', 'trusted']:
+            values.append(value)
+            qualifications.append(qualification)
+    except Exception as e:
+        print("Error method extract_qualifications " + str(e))
+        
+
+
 string = """Name: Adriana Flores 
 Core Skill: AM Analyst English Level: B2 Technologies: Pascal, Visual Basic, PHP, Assembly language, Microsoft SQL Server, Microsoft SQL Server Express, Ubuntu, Sql Server, SQL, Raspberry, QEMU, Postman, Microsoft Azure Soft Skills: Teamwork, Strong Analytical Skills, Management, Leadership Development, Ethical thinking, Curiosity, Client Oriented, Client Relationship, Adaptability, Analysis, Azure Industry Verticals: Energy, Mobility Certifications: Cloud Computing for beginners -Infrastructure as a Service, Identity and Access Governance (IAM/IAG/IGA), Windows Server 2019 administration, Introduction to Cloud Computing on AWS for beginners 2024, Chat GPT Complete Guide: Learn MidJourney, ChatGPT 4 & More Spoken Languages: Spanish (Native), English (B2)
 Matching with company values:
@@ -61,6 +84,5 @@ Match percentage: 27.27%
 last_line = string.splitlines()[-1]
 print(last_line)
 
-percentaje = re.findall('\d*%', last_line)[0]
-print(percentaje)
+
 

@@ -2,6 +2,8 @@
 from dotenv import load_dotenv
 import streamlit as st
 from st_pages import Page, show_pages, add_page_title
+import azure.cognitiveservices.speech as speechsdk
+ 
 
 # load environment vars
 load_dotenv()
@@ -24,14 +26,20 @@ show_pages(
         Page("src/pages/dashboard_candidates.py", "Candidates Dashboard", "📊"),
         Page("src/pages/recruitment_interview.py", "HADA Interview Analyzer", "🧚"),
         Page("src/pages/dashboard_interview.py", "Interview Dashboard", "📊"),
+        Page("src/pages/recruitment_with_audio.py", "Demo audio Speech", "🔊")
     ]
 )
+
+def synthesize_and_save_speech(voice_speech):
+    speech_config = speechsdk.SpeechConfig(subscription="d9e4e91e17aa4fc7a2ebcefc71058b05", region="eastus")
+    speech_synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config)
+    speech_synthesizer.speak_text_async(voice_speech).get()
 
 def menu_home():
     st.sidebar.subheader("💬 About")
     st.sidebar.markdown("""Hiring Assistant for Endava is an application designed to help in the process of recruiting new talents. 
                         HADA Candidate Finder will search and read the different profiles. Pinpointing the most suitable candidates based on the search requirements.
-                        HADA Interview Analizer will perform an analysis of the interview by the recruiter and the candidates. Also, will provide a comprehensive assessment of each candidate's strengths and weaknesses.""")
+                        HADA Interview Analyzer will perform an analysis of the interview by the recruiter and the candidates. Also, will provide a comprehensive assessment of each candidate's strengths and weaknesses.""")
 
     st.sidebar.subheader("🙍‍♀️ About Me")
     st.sidebar.markdown("I am an AI-powered interviewer, ready to find the best candidate!")
@@ -65,6 +73,8 @@ def body():
 if __name__ == "__main__":
     menu_home()
     body()
+    voice_speech = "Welcome To HADA - Hiring Assistant for Endava"
+    synthesize_and_save_speech(voice_speech)
 
 
 
