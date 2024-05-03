@@ -196,7 +196,7 @@ def get_candidate_data(collection):
                 name = re.search('name:(.*)rating:', document).group(1).strip()
 
             if re.search('rating:(.*)', document):
-                rating = re.search('rating:(.*)', document).group(1).strip()
+                rating = float(re.search('rating:(.*)', document).group(1).strip())
 
             data["name"].append(name)
             data["Rate"].append(rating)
