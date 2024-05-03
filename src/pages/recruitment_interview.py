@@ -4,6 +4,10 @@ from dotenv import load_dotenv
 import os
 import streamlit as st
 import menu_info
+import chromadb
+import re
+import pandas as pd
+import matplotlib.pyplot as plt
 
 #Config Page
 st.set_page_config(
@@ -24,6 +28,12 @@ client = AzureOpenAI (
     api_version=os.getenv("API_VERSION") # Ensure you use the correct API version
 )
 
+# connect database
+def connect_database():
+    client_database = chromadb.PersistentClient(path="./database/", settings=Settings(allow_reset=True))
+    return client_database
+
+
 position = ".Net developer"
 
 prompt = f"""Generate an interview between a Human Resources (HR) recruiter and a candidate for the {position} position. The interview should address both technical and soft skills and contain a maximum of 10 questions and answers."""
@@ -39,6 +49,9 @@ and rate every value with the next values: low, medium, or high
 You should generate the result in text format 
 You should generate a table with the next format [Value, Rating]
 You should use the next interview """
+
+final_values = []
+final_qualifications = []
 
 def interview():
 
@@ -84,11 +97,143 @@ def analize_interview (interview):
 
 
 def initalize_chat():
+
+    st.chat_message("assistant").write(f"Generating Interview ....")
+
     responseMessage = generate_interview([{"role": "assistant", "content": prompt}])
     st.session_state["messages2"] = [{"role": "assistant", "content": responseMessage}]
 
+    st.chat_message("assistant").write(f"Analizing Interview ....")
+
     responseMessage = analize_interview(responseMessage)
+    print("Resultado " + responseMessage)
+    st.session_state["messages2"].append({"role": "assistant", "content": "After analyzing the interview, I summarized the candidate's strengths and weaknesses as follows:"})
     st.session_state["messages2"].append({"role": "assistant", "content": responseMessage})
+    store_qualifications(responseMessage)
+
+
+def extract_qualifications(text):
+    #text = 'Smart: High\nThoughtful: High\nOpen: Medium\nAdaptable: Medium\nTrusted: Low'
+    lines = text.split('\n')
+    values = []
+    qualifications = []
+
+    for line in lines:
+        try:
+            
+            value, qualification = line.split(': ')
+            value = re.sub(r'[^A-Z:a-z0-9]+', '', value.strip().lower())
+            qualification = qualification.strip().lower() 
+            
+            if value in ['smart', 'thoughtful', 'open', 'adaptable', 'trusted']:
+                values.append(value)
+                qualifications.append(qualification)
+
+        except Exception as e:
+            print("Error method extract_qualifications " + str(e))
+
+    return values, qualifications
+
+
+def show_data(values, qualifications):
+
+    qualifications[0] = 'low'
+    datos = {
+        'CompanyValue': values,
+        'Level': qualifications
+    }
+
+    # print(datos)
+
+    df = pd.DataFrame(datos)
+
+    order_x = ['low', 'medium', 'high']
+    df['Level'] = df['Level'].map({'low': 0, 'medium': 1, 'high': 2})
+    df = df.sort_values(by='Level')
+    df['Level'] = df['Level'].map({0: 'low', 1: 'medium', 2: 'high'})
+
+    # Configurar el título de la aplicación
+    st.title('Level of Company Values')
+
+    # Crear un gráfico de barras utilizando matplotlib
+    plt.figure(figsize=(10, 6))
+    plt.barh(df['CompanyValue'], df['Level'], color='skyblue')
+    plt.xlabel('Level')
+    plt.ylabel('CompanyValue')
+    plt.title('Level of Company Values')
+    plt.grid(axis='x')
+
+    # Establecer el orden de las etiquetas del eje x
+    plt.xticks(ticks=[0, 1, 2], labels=order_x)
+
+    # Mostrar el gráfico utilizando Streamlit
+    st.pyplot(plt) 
+
+
+def store_qualifications(response):
+
+    global final_values
+    global final_qualifications
+
+    id = 0
+    ids = []
+    documents = []
+    metadatas = []
+
+    (values, qualifications) = extract_qualifications(response)
+    final_values = values
+    final_qualifications = qualifications
+
+    print("Values:", values)
+    print("Qualifications:", qualifications)
+
+    for index in range(len(values)):
+
+        value = values[index]
+
+        id += 1
+        ids.append("id"+ str(id))
+
+        document = f"{value}: {qualifications[index]}"
+        documents.append(document)
+
+        source = {}
+        source["source"] = value
+        metadatas.append(source)        
+
+
+    #print("ids:", ids)
+    #print("metadatas:", metadatas)
+    #print("documents:", documents)
+
+    collection = store_collection(ids, metadatas, documents)
+    st.chat_message("assistant").write(f"The next grapich show the results!!")
+
+
+
+
+def store_collection (ids, metadatas, documents):
+    try:
+        client_database = connect_database()
+
+        collection_name = "qualifications_candidate"
+        # delete if exits
+        if collection_name in [c.name for c in client_database.list_collections()]:
+            client_database.delete_collection(name=collection_name)
+
+        collection = client_database.get_or_create_collection(name=collection_name)
+        collection.add(
+            documents=documents,
+            metadatas=metadatas,
+            ids=ids
+        )
+        return collection
+
+    except Exception as e:
+        print(str(e))
+        return str(e) # Return the exception as a string for debugging 
+
+
 
 
 if __name__ == "__main__":
@@ -98,3 +243,5 @@ if __name__ == "__main__":
 
     menu_info.menu_messages()
     interview()
+
+    show_data(final_values, final_qualifications)
