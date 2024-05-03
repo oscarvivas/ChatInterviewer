@@ -52,7 +52,8 @@ You should generate a list of bullets with value and rating take into account th
 * Thoughtful: low
 * Open: low
 * Adaptable: low
-* Trusted: low """
+* Trusted: low 
+You should use the next interview """
 
 final_values = []
 final_qualifications = []
