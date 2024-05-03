@@ -31,7 +31,7 @@ def menu_home():
     st.sidebar.subheader("💬 About")
     st.sidebar.markdown("""Hiring Assistant for Endava is an application designed to help in the process of recruiting new talents. 
                         HADA Candidate Finder will search and read the different profiles. Pinpointing the most suitable candidates based on the search requirements.
-                        HADA Interview Analizer will perform an analysis of the interview by the recruiter and the candidates. Also, will provide a comprehensive assessment of each candidate's strengths and weaknesses.""")
+                        HADA Interview Analyzer will perform an analysis of the interview by the recruiter and the candidates. Also, will provide a comprehensive assessment of each candidate's strengths and weaknesses.""")
 
     st.sidebar.subheader("🙍‍♀️ About Me")
     st.sidebar.markdown("I am an AI-powered interviewer, ready to find the best candidate!")
