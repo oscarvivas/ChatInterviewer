@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import menu_info
 import chromadb
+import re
 from chromadb.config import Settings
 
 #Config Page
@@ -29,9 +30,9 @@ def write_into_database():
     collection.add(
             documents=["name: Dan rating: 8.5",
                        "name: Pedro rating: 7.5",
-                       "name: Carlos rating: 6.5",
+                       "name: Carlos Rodriguez rating: 6.5",
                        "name: Eric rating: 3.5",
-                       "name: Gabriel rating: 9.5",
+                       "name: Gabriel Peralta rating: 9.5",
                        "name: Ignacio rating: 1.5"
                         ],
              ids= ["id1", "id2", "id4", "id5", "id6", "id7"]
@@ -39,11 +40,14 @@ def write_into_database():
     
 def get_candidate_data(collection):
     for document in collection.get()["documents"]:
-        parts = document.split(" ")
-        name = parts[1]
-        rating = float(parts[3].replace("rating:", ""))
-        data["name"].append(name)
-        data["Rate"].append(rating)
+        try:
+            
+            data["name"].append(re.search('name:(.*)rating:', document).group(1).strip())
+            data["Rate"].append(float(re.search('rating:(.*)', document).group(1).strip()))
+            
+        except Exception as e:
+            print("Error " + str(e) + " no actions")
+
 
     
 def show_data():
