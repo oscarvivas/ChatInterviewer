@@ -56,7 +56,7 @@ def body():
     st.text("👉 Instructions:")
     st.code("1. Upload the profiles into the repository.")
     st.code("2. In Profile Loader you check the profiles in the database.")
-    st.code("3. Chat witg HADA Candidate Finder to refine your candidate search")
+    st.code("3. Chat with HADA Candidate Finder to refine your candidate search")
     st.code("4. With the Candidates Dashboard look up the chart with the candidates")
     st.code("5. HADA Interview Analyzer can deliver another insight from the interview to the candidates.")
     st.code("6. In the Interview Dashboard check the chart for the interview results.")
